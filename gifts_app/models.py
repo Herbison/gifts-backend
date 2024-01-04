@@ -32,10 +32,10 @@ class Gift(models.Model):
     exact_item = models.BooleanField(default=False)
     multiple = models.BooleanField(default=False)
     notes = models.CharField(max_length=1000, blank=True)
-    date_to_remove = models.DateField(blank=True, null=True)
+    date_to_remove = models.DateField(blank=True, null=True,default=None)
     bought = models.BooleanField(default=False)
-    visible_to = models.ManyToManyField(User, related_name='visible_gifts', blank=True)
-    added_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    visible_to = models.ManyToManyField(User, related_name='visible_gifts', blank=True) # Make default all
+    added_by = models.ForeignKey(User, on_delete=models.CASCADE) #Auto add currently logged-in user
 
 class Link(models.Model):
     """

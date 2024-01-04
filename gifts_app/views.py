@@ -10,8 +10,37 @@ from django.http import JsonResponse
 
 
 @api_view(["POST"])
-def create_gift_self(request):
+def create_gift_other(request):
     form = AddOtherForm(request.POST)
+    if form.is_valid():
+        gift_id = form.cleaned_data.get("gift_id")
+        gift_receiver = form.cleaned_data.get("gift_receiver")
+        item_name = form.cleaned_data.get("item_name")
+        exact_item = form.cleaned_data.get("exact_item")
+        multiple = form.cleaned_data.get("multiple")
+        notes = form.cleaned_data.get("notes")
+        date_to_remove = form.cleaned_data.get("date_to_remove")
+        bought = form.cleaned_data.get("bought")
+        visible_to = form.cleaned_data.get("visible_to")
+        added_by = request.user  # Adds the currently logged-in user
+
+        # Add gift to DB
+
+        return JsonResponse(
+            {
+                "message": "Gift added successfully",
+            }
+        )
+    else:
+        return JsonResponse(
+            {
+                "message": "Form is not valid",
+            }
+        )
+
+@api_view(["POST"])
+def create_gift_self(request):
+    form = AddSelfForm(request.POST)
     if form.is_valid():
         gift_id = form.cleaned_data.get("gift_id")
         #Add other fields
@@ -20,12 +49,6 @@ def create_gift_self(request):
             "message": "Gift added successfully",
         }
     )
-    pass
-
-@api_view(["POST"])
-def create_gift_other(request):
-    form = AddSelfForm(request.POST)
-    pass
 
 @api_view(["GET"])
 def get_self_view(request):
