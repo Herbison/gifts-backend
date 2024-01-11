@@ -6,6 +6,7 @@ from .serializers import GiftSerializer
 from django.contrib.auth.models import User
 from .forms import AddOtherForm, AddSelfForm
 from django.http import JsonResponse
+from .models import Gift, User
 
 
 
@@ -38,6 +39,23 @@ def create_gift_other(request):
             }
         )
 
+@api_view(["GET"])
+def get_all_gifts(request):
+    gifts = Gift.objects.all()
+    gift = gifts.values(
+        "gift_id",
+        "gift_receiver",
+        "item_name",
+        "exact_item",
+        "multiple",
+        "notes",
+        "date_to_remove",
+        "bought",
+        "visible_to",
+        "added_by",
+    )
+    return JsonResponse({"gifts": list(gift)})
+
 @api_view(["POST"])
 def create_gift_self(request):
     form = AddSelfForm(request.POST)
@@ -49,14 +67,6 @@ def create_gift_self(request):
             "message": "Gift added successfully",
         }
     )
-
-@api_view(["GET"])
-def get_self_view(request):
-    pass
-
-@api_view(["GET"])
-def get_other_view(request):
-    pass
 
 @api_view(["PUT"])
 def update_gift(request):

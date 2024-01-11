@@ -1,8 +1,7 @@
 from django.urls import path
-from .views import create_gift_self, create_gift_other, get_self_view, get_other_view, update_gift, remove_gift
+from .views import get_all_gifts
 
 
 urlpatterns = [
-    path('create_gift_self/', create_gift_self, name='create_gift_self'),
-    path('create_gift_other/', create_gift_other, name='create_gift_other'),
+    path('get_all_gifts/', get_all_gifts, name='get_all_gifts'),
 ]
