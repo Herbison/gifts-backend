@@ -55,3 +55,7 @@ class Link(models.Model):
 
     gift = models.ForeignKey(Gift, related_name='urls', on_delete=models.CASCADE)
     url = models.URLField(max_length=400)
+
+class Member(models.model):
+    member_name = models.CharField(primary_key=True, max_length=50)
+    show_bought = models.BooleanField(default=True)
