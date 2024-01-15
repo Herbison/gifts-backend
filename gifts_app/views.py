@@ -3,15 +3,14 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import GiftSerializer
-from django.contrib.auth.models import User
 from .forms import AddOtherForm, AddSelfForm
 from django.http import JsonResponse
-from .models import Gift, User
+from .models import Gift, Member
 
 
 
 @api_view(["POST"])
-def create_gift_other(request):
+def create_gift(request):
     form = AddOtherForm(request.POST)
     if form.is_valid():
         gift_id = form.cleaned_data.get("gift_id")
@@ -38,6 +37,15 @@ def create_gift_other(request):
                 "message": "Form is not valid",
             }
         )
+
+@api_view(["GET"])
+def get_all_members(request):
+    members = Member.objects.all()
+    member = members.values(
+        "member_name",
+        "show_bought",    
+    )
+    return JsonResponse({"members": list(member)})
 
 @api_view(["GET"])
 def get_all_gifts(request):
@@ -72,6 +80,6 @@ def create_gift_self(request):
 def update_gift(request):
     pass
 
-@api_view(["DELETES"])
+@api_view(["DELETE"])
 def remove_gift(request):
     pass

@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class Member(models.model):
+    member_name = models.CharField(primary_key=True, max_length=50)
+    show_bought = models.BooleanField(default=True)
+
 class Gift(models.Model):
     """
     Gift model represents an item that a user wishes to receive as a gift.
@@ -27,7 +31,8 @@ class Gift(models.Model):
     visible to a particular user using 'user.visible_gifts.all()'.
     """
     gift_id = models.AutoField(primary_key=True)
-    gift_receiver = models.ForeignKey(User, on_delete=models.CASCADE)
+    active_member = models.ForeignKey(Member, on_delete=models.CASCADE)
+    gift_receiver = models.ForeignKey(Member, on_delete=models.CASCADE)
     item_name = models.CharField(max_length=100)
     exact_item = models.BooleanField(default=False)
     multiple = models.BooleanField(default=False)
@@ -56,6 +61,3 @@ class Link(models.Model):
     gift = models.ForeignKey(Gift, related_name='urls', on_delete=models.CASCADE)
     url = models.URLField(max_length=400)
 
-class Member(models.model):
-    member_name = models.CharField(primary_key=True, max_length=50)
-    show_bought = models.BooleanField(default=True)
