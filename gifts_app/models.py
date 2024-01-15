@@ -17,27 +17,14 @@ class Member(models.Model):
 
 class Link(models.Model):
     """
-    The Link model represents up to three URLs associated with a Gift.
+    The Link model represents a single URL associated with a Gift.
 
     Attributes:
-        link_id (AutoField): A unique identifier for each gift, automatically generated
-        url1 (URLField): The first URL associated with the Gift. Can be null.
-        url1_name (CharField): The name or description of the first URL. Can be null.
-        url2 (URLField): The second URL associated with the Gift. Can be null.
-        url2_name (CharField): The name or description of the second URL. Can be null.
-        url3 (URLField): The third URL associated with the Gift. Can be null.
-        url3_name (CharField): The name or description of the third URL. Can be null.
-    
-    The `related_name='urls'` property in the ForeignKey definition allows each Gift to access its associated links directly using `gift.urls`
+        url (URLField): The URL associated with the Gift.
+        name (CharField): The name or description of the URL.
     """
-
-    link_id = models.AutoField(primary_key=True)
-    url1 = models.URLField(max_length=400, null=True, default=None)
-    url1_name = models.CharField(max_length=100, null=True, default=None)
-    url2 = models.URLField(max_length=400, null=True, default=None)
-    url2_name = models.CharField(max_length=100, null=True, default=None)
-    url3 = models.URLField(max_length=400, null=True, default=None)
-    url3_name = models.CharField(max_length=100, null=True, default=None)
+    url = models.URLField(max_length=400)
+    name = models.CharField(max_length=100, blank=True)
 
 class Gift(models.Model):
     """
@@ -48,7 +35,7 @@ class Gift(models.Model):
         gift_adder (ForeignKey): A reference to the Member who added the gift, establishing who is responsible for the entry of this gift. This sets up a many-to-one relationship with the Member model.
         gift_receiver (ForeignKey): A reference to the Member who is intended to receive the gift. This sets up another many-to-one relationship with the Member model.
         item_name (CharField): The name or description of the gift.
-        link (ForeignKey): A link to the Link model which contains up to three URLs related to the gift. This allows for associating multiple purchase options or references with the gift.
+        links (ManyToManyField): A list of Links associated with this gift. This field allows for associating multiple URLs with the gift.
         exact_item (BooleanField): Indicates whether an exact item is being requested, or just a type. 'True' means the exact item is requested, 'False' allows for similar items.
         multiple (BooleanField): Indicates whether multiple instances of this gift are acceptable. Useful for items where having more than one is desirable.
         notes (CharField): Additional notes or details about the gift, can be left blank.
@@ -63,7 +50,7 @@ class Gift(models.Model):
     gift_adder = models.ForeignKey(Member, on_delete=models.CASCADE)
     gift_receiver = models.ForeignKey(Member, on_delete=models.CASCADE)
     item_name = models.CharField(max_length=100)
-    link = models.ForeignKey(Link, on_delete=models.CASCADE, null=True, default=None)
+    links = models.ManyToManyField(Link, blank=True)
     exact_item = models.BooleanField(default=False)
     multiple = models.BooleanField(default=False)
     notes = models.CharField(max_length=1000, blank=True)
