@@ -19,9 +19,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-i@s5m*#_x6=pj*tg$mohmh_rkfo7y9)xyp1)7yj6-%4!r_c&t7"
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -38,6 +35,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "gifts_app",
+    "corsheaders",
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -48,7 +47,17 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",  # CORS
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True # Not for production. Turn off for production..
+
+# Production Example:
+# CORS_ALLOWED_ORIGINS = [
+#     "https://example.com",
+#     "http://localhost:8000",
+#     "http://localhost:3000",
+# ]
 
 ROOT_URLCONF = "gifts_project.urls"
 
@@ -122,3 +131,8 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+try:
+    from gifts_project.local_settings import *
+except ImportError:
+    pass
