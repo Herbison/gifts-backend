@@ -47,8 +47,8 @@ class Gift(models.Model):
     """
 
     gift_id = models.AutoField(primary_key=True)
-    gift_adder = models.ForeignKey(Member, on_delete=models.CASCADE)
-    gift_receiver = models.ForeignKey(Member, on_delete=models.CASCADE)
+    gift_adder = models.ForeignKey(Member, on_delete=models.CASCADE, related_name='adding_gift')
+    gift_receiver = models.ForeignKey(Member, on_delete=models.CASCADE, related_name='receiving_gift')
     item_name = models.CharField(max_length=100)
     links = models.ManyToManyField(Link, blank=True)
     exact_item = models.BooleanField(default=False)

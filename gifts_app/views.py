@@ -14,15 +14,6 @@ def create_gift(request):
     form = AddOtherForm(request.POST)
     if form.is_valid():
         gift_id = form.cleaned_data.get("gift_id")
-        gift_receiver = form.cleaned_data.get("gift_receiver")
-        item_name = form.cleaned_data.get("item_name")
-        exact_item = form.cleaned_data.get("exact_item")
-        multiple = form.cleaned_data.get("multiple")
-        notes = form.cleaned_data.get("notes")
-        date_to_remove = form.cleaned_data.get("date_to_remove")
-        bought = form.cleaned_data.get("bought")
-        visible_to = form.cleaned_data.get("visible_to")
-        added_by = request.user  # Adds the currently logged-in user
 
         # Add gift to DB
 
