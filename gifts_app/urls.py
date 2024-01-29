@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import get_all_gifts, get_all_members, create_gift
+from .views import get_all_gifts, get_all_members, create_gift, get_single_member_gifts
 
 
 urlpatterns = [
