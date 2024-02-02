@@ -55,35 +55,6 @@ def get_all_gifts(request):
     )
     return JsonResponse({"gifts": list(gift)})
 
-# @api_view(["GET"])
-# def get_single_member_gifts(request, gift_receiver):
-#     gifts = Gift.objects.all()
-#     gift = gifts.values(
-#         "gift_id",
-#         "gift_receiver",
-#         "item_name",
-#         "exact_item",
-#         "multiple",
-#         "notes",
-#         "date_to_remove",
-#         "bought",
-#         "visible_to",
-#         "added_by",
-#     )
-#     return JsonResponse({"gifts": list(gift)})
-
-@api_view(["POST"])
-def create_gift_self(request):
-    form = AddSelfForm(request.POST)
-    if form.is_valid():
-        gift_id = form.cleaned_data.get("gift_id")
-        #Add other fields
-    return JsonResponse(
-        {
-            "message": "Gift added successfully",
-        }
-    )
-
 @api_view(["PUT"])
 def update_gift(request):
     pass
