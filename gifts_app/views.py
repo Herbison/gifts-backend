@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import GiftSerializer
-from .forms import Giftform
+from .forms import GiftForm
 from django.http import JsonResponse
 from .models import Gift, Member
 
@@ -11,7 +11,7 @@ from .models import Gift, Member
 
 @api_view(["POST"])
 def create_gift(request):
-    form = Giftform(request.POST)
+    form = GiftForm(request.POST)
     if form.is_valid():
         gift_id = form.cleaned_data.get("gift_id")
 
