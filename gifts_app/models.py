@@ -39,7 +39,7 @@ class Gift(models.Model):
         exact_item (BooleanField): Indicates whether an exact item is being requested, or just a type. 'True' means the exact item is requested, 'False' allows for similar items.
         multiple (BooleanField): Indicates whether multiple instances of this gift are acceptable. Useful for items where having more than one is desirable.
         notes (CharField): Additional notes or details about the gift, can be left blank.
-        date_to_remove (DateField): An optional field indicating when this gift should be remo+ved from the list, useful for time-sensitive gifts, and for keeping the list clean once an item is marked as bought. Can be null.
+        date_to_remove (DateField): An optional field indicating when this gift should be removed from the list, useful for time-sensitive gifts, and for keeping the list clean once an item is marked as bought. Can be null.
         bought (BooleanField): Indicates whether the gift has been purchased.
         visible_to (ManyToManyField): A list of Members who are allowed to view this gift. This field allows the gift to be visible to specific members, beyond just the gift receiver and adder.
 
