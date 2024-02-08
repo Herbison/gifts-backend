@@ -32,11 +32,11 @@ def create_gift(request):
 @api_view(["GET"])
 def get_all_members(request):
     members = Member.objects.all()
-    member = members.values(
+    member_list = members.values(
         "member_name",
         "show_bought",    
     )
-    return JsonResponse({"members": list(member)})
+    return JsonResponse({"members": list(member_list)})
 
 @api_view(["GET"])
 def get_all_gifts(request):
