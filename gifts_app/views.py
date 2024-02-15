@@ -41,8 +41,9 @@ def get_all_members(request):
 @api_view(["GET"])
 def get_all_gifts(request):
     gifts = Gift.objects.all()
-    gift = gifts.values(
-        "gift_id",
+    gift_list = gifts.values(
+        "gift_id", # Primary Key
+        "gift_adder",
         "gift_receiver",
         "item_name",
         "exact_item",
@@ -51,9 +52,8 @@ def get_all_gifts(request):
         "date_to_remove",
         "bought",
         "visible_to",
-        "added_by",
     )
-    return JsonResponse({"gifts": list(gift)})
+    return JsonResponse({"gifts": list(gift_list)})
 
 @api_view(["PUT"])
 def update_gift(request):
