@@ -33,6 +33,7 @@ def create_gift(request):
 def get_all_members(request):
     members = Member.objects.all()
     member_list = members.values(
+        "member_id", # Primary Key
         "member_name",
         "show_bought",    
     )
