@@ -6,6 +6,8 @@ from .serializers import GiftSerializer
 from .forms import GiftForm
 from django.http import JsonResponse
 from .models import Gift, Member
+from django.db.models import Prefetch
+
 
 
 
@@ -40,9 +42,9 @@ def get_all_members(request):
     return JsonResponse({"members": list(member_list)})
 
 @api_view(["GET"])
-def get_all_gifts(request):
-    gifts = Gift.objects.all()
-    gift_list = gifts.values(
+def get_all_gifts_self(request, member_id):
+    self_gifts = Gift.objects.filter(gift_receiver=member_id)
+    gift_list = self_gifts.values(
         "gift_id", # Primary Key
         "gift_adder",
         "gift_receiver",
@@ -55,6 +57,9 @@ def get_all_gifts(request):
         "visible_to",
     )
     return JsonResponse({"gifts": list(gift_list)})
+
+def get_all_gifts_other(request, member_id):
+    pass
 
 @api_view(["PUT"])
 def update_gift(request):
