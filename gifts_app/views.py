@@ -56,8 +56,8 @@ def get_all_gifts_self(request):
         gift_list = [
             {
                 'gift_id': gift.id,
-                'gift_adder': gift.gift_adder.member_name if gift.gift_adder else None,
-                'gift_receiver': gift.gift_receiver.member_name if gift.gift_receiver else None,
+                'gift_adder': gift.gift_adder.member_name,
+                'gift_receiver': gift.gift_receiver.member_name,
                 'item_name': gift.item_name,
                 'exact_item': gift.exact_item,
                 'multiple': gift.multiple,
@@ -82,6 +82,3 @@ def update_gift(request):
 @api_view(["DELETE"])
 def remove_gift(request):
     pass
-
-
-
