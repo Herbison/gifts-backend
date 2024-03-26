@@ -52,6 +52,7 @@ def get_all_gifts_self(request):
         visible_gifts = member.visible_gifts.prefetch_related(
             Prefetch('visible_to', queryset=Member.objects.only('member_name'))
         )
+        self_gifts = visible_gifts.filter(gift_receiver=member)
         # Builds a list of gifts with custom structure including 'visible_to' member names
         gift_list = [
             {
@@ -66,7 +67,7 @@ def get_all_gifts_self(request):
                 'bought': gift.bought,
                 'visible_to': list(gift.visible_to.values_list('member_name', flat=True))
             }
-            for gift in visible_gifts
+            for gift in self_gifts
         ]
         return JsonResponse({'gifts': gift_list})
     else:
