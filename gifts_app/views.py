@@ -55,7 +55,7 @@ def get_all_gifts_self(request):
         # Builds a list of gifts with custom structure including 'visible_to' member names
         gift_list = [
             {
-                'gift_id': gift.id,
+                'gift_id': gift.gift_id,
                 'gift_adder': gift.gift_adder.member_name,
                 'gift_receiver': gift.gift_receiver.member_name,
                 'item_name': gift.item_name,
@@ -72,7 +72,8 @@ def get_all_gifts_self(request):
     else:
         return JsonResponse({'error': 'No member_id provided'}, status=400)
 
-def get_all_gifts_other(request, member_id):
+def get_all_gifts_other(request):
+    # member_id = request.query_params.get('member_id')
     pass
 
 @api_view(["PUT"])
