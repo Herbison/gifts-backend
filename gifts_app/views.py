@@ -44,7 +44,7 @@ def get_all_members(request):
     return JsonResponse({"members": list(member_list)})
 
 @api_view(["GET"])
-def get_all_gifts_self(request):
+def get_gifts_self(request):
     member_id = request.query_params.get('member_id')
     if member_id is not None:
         member = Member.objects.get(pk=member_id)
@@ -73,7 +73,7 @@ def get_all_gifts_self(request):
     else:
         return JsonResponse({'error': 'No member_id provided'}, status=400)
 
-def get_all_gifts_other(request):
+def get_gifts_other(request):
     # member_id = request.query_params.get('member_id')
     pass
 
