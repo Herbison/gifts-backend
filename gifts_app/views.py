@@ -75,34 +75,36 @@ def get_gifts_self(request):
 
 @api_view(["GET"])
 def get_gifts_other(request):
-    member_id = request.query_params.get('self_member_id')
+    member_id = request.query_params.get('member_id')
     if member_id is not None:
         self_member = Member.objects.get(pk=member_id)
-        visible_gifts = Gift.objects.filter(visible_to=self_member)
+        # Get gifts where self_member is in visible_to but is not the receiver
+        gifts = Gift.objects.filter(
+            visible_to=self_member
+        ).exclude(
+            gift_receiver=self_member
+        )
 
-        gifts_by_member = []
-        for member in Member.objects.exclude(pk=member_id):
-            member_gifts = visible_gifts.filter(gift_receiver=member)
-            gift_list = [
-                {
-                    'gift_id': gift.gift_id,
-                    'gift_adder': gift.gift_adder.member_name,
-                    'gift_receiver': gift.gift_receiver.member_name,
-                    'item_name': gift.item_name,
-                    'exact_item': gift.exact_item,
-                    'multiple': gift.multiple,
-                    'notes': gift.notes,
-                    'date_to_remove': gift.date_to_remove,
-                    'bought': gift.bought,
-                }
-                for gift in member_gifts
-            ]
-            if gift_list:  # Only add if there are gifts for this member
-                gifts_by_member.append(gift_list)
+        # Serialize the gifts data
+        gifts_list = [
+            {
+                'gift_id': gift.gift_id,
+                'gift_adder': gift.gift_adder.member_name,
+                'gift_receiver': gift.gift_receiver.member_name,
+                'item_name': gift.item_name,
+                'exact_item': gift.exact_item,
+                'multiple': gift.multiple,
+                'notes': gift.notes,
+                'date_to_remove': gift.date_to_remove,
+                'bought': gift.bought,
+            }
+            for gift in gifts
+        ]
 
-        return JsonResponse({'gifts_by_member': gifts_by_member})
+        return JsonResponse({'gifts': gifts_list})
     else:
         return JsonResponse({'error': 'No self_member_id provided'}, status=400)
+
 
 
 @api_view(["PUT"])
