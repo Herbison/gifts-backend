@@ -19,5 +19,5 @@ class GiftForm(forms.Form):
         # Adding later
     exact_item = forms.BooleanField(required=False)
     multiple = forms.BooleanField(required=False)
-    notes = forms.CharField(widget=forms.Textarea, required=False)  # Using a textarea for multi-line input
+    notes = forms.CharField(widget=forms.Textarea, required=False)
     visible_to = forms.ModelMultipleChoiceField(queryset=Member.objects.all(), required=False)
