@@ -5,7 +5,7 @@
 # May need these later, but not actively using them now
 
 from rest_framework.decorators import api_view
-from .forms import GiftForm
+# from .forms import GiftForm
 from django.http import JsonResponse
 from .models import Gift, Member
 from django.db.models import Prefetch
@@ -15,23 +15,22 @@ from django.db.models import Prefetch
 
 @api_view(["POST"])
 def create_gift(request):
-    form = GiftForm(request.POST)
-    if form.is_valid():
-        gift_id = form.cleaned_data.get("gift_id")
-
-        # Add gift to DB
-
-        return JsonResponse(
-            {
-                "message": "Gift added successfully",
-            }
-        )
-    else:
-        return JsonResponse(
-            {
-                "message": "Form is not valid",
-            }
-        )
+    # ADD FORM LATER. Doing without for simplicity for now.
+    # form = GiftForm(request.POST)
+    # if form.is_valid():
+    #     gift_id = form.cleaned_data.get("gift_id")
+    #     return JsonResponse(
+    #         {
+    #             "message": "Gift added successfully",
+    #         }
+    #     )
+    # else:
+    #     return JsonResponse(
+    #         {
+    #             "message": "Form is not valid",
+    #         }
+    #     )
+    pass
 
 @api_view(["GET"])
 def get_all_members(request):

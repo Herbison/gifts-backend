@@ -1,5 +1,5 @@
 from django import forms
-from .models import Gift
+from .models import Gift, Member
 
 class GiftForm(forms.ModelForm):
     class Meta:
@@ -9,3 +9,8 @@ class GiftForm(forms.ModelForm):
             'visible_to': forms.CheckboxSelectMultiple(),
         }
         # Only fields I want to show. How do I handle visibility, which is only visible to selfMember?
+
+
+class GiftForm2(forms.Form):
+    gift_adder = forms.
+    
