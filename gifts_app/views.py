@@ -42,9 +42,15 @@ def get_all_members(request):
     )
     return JsonResponse({"members": list(member_list)})
 
+# @api_view(["GET"])
+# def get_gifts_by_id(request, member_id):
+#     gifts = Gift.objects.filter(member__member_id=member_id).values(
+#     )
+#     pass
+
+
 @api_view(["GET"])
-def get_gifts_self(request):
-    member_id = request.query_params.get('member_id')
+def get_gifts_self(request, member_id):
     if member_id is not None:
         member = Member.objects.get(pk=member_id)
         # Optimizes the query for the 'visible_to' relationship
@@ -73,8 +79,7 @@ def get_gifts_self(request):
         return JsonResponse({'error': 'No member_id provided'}, status=400)
 
 @api_view(["GET"])
-def get_gifts_other(request):
-    member_id = request.query_params.get('member_id')
+def get_gifts_other(request, member_id):
     if member_id is not None:
         self_member = Member.objects.get(pk=member_id)
         # Get gifts where self_member is in visible_to but is not the receiver
