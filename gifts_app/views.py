@@ -5,7 +5,7 @@
 # May need these later, but not actively using them now
 
 from rest_framework.decorators import api_view
-# from .forms import GiftForm
+from .forms import GiftForm
 from django.http import JsonResponse
 from .models import Gift, Member
 from django.db.models import Prefetch
