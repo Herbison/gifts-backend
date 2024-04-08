@@ -1,9 +1,9 @@
-# from django.shortcuts import render
 # from rest_framework.response import Response
 # from rest_framework import status
 # from .serializers import GiftSerializer
 # May need these later, but not actively using them now
 
+from django.shortcuts import render
 from rest_framework.decorators import api_view
 from .forms import GiftForm
 from django.http import JsonResponse
@@ -15,6 +15,12 @@ from django.db.models import Prefetch
 
 @api_view(["POST"])
 def create_gift(request):
+    form = GiftForm(request.POST)
+    if form.is_valid():
+        gift = form.save()
+        form.save_m2m()
+
+
     # ADD FORM LATER. Doing without for simplicity for now.
     # form = GiftForm(request.POST)
     # if form.is_valid():
