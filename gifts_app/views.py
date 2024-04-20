@@ -5,38 +5,32 @@
 
 from django.shortcuts import render
 from rest_framework.decorators import api_view
+from rest_framework import status
 from .forms import GiftForm
 from django.http import JsonResponse
 from .models import Gift, Member
 from django.db.models import Prefetch
 
-
-
-
 @api_view(["POST"])
 def create_gift(request):
     form = GiftForm(request.POST)
     if form.is_valid():
-        gift = form.save()
-        form.save_m2m()
-
-
-    # ADD FORM LATER. Doing without for simplicity for now.
-    # form = GiftForm(request.POST)
-    # if form.is_valid():
-    #     gift_id = form.cleaned_data.get("gift_id")
-    #     return JsonResponse(
-    #         {
-    #             "message": "Gift added successfully",
-    #         }
-    #     )
-    # else:
-    #     return JsonResponse(
-    #         {
-    #             "message": "Form is not valid",
-    #         }
-    #     )
-    pass
+        gift = form.save(commit=False)
+        form.save_m2m() # Saves many-to-many fields
+        return JsonResponse(
+            # Should I be using Reponse instead of JsonResponse?
+            {
+                "message": "Gift added successfully",
+                "gift_id": gift.gift_id,
+            }, status = status.HTTP_201_CREATED
+        )
+    else:
+        return JsonResponse(
+            {
+                "message": "Form is not valid",
+                "errors": form.errors,
+            }, status = status.HTTP_400_BAD_REQUEST
+        )
 
 @api_view(["GET"])
 def get_all_members(request):
@@ -47,12 +41,6 @@ def get_all_members(request):
         "show_bought",    
     )
     return JsonResponse({"members": list(member_list)})
-
-# @api_view(["GET"])
-# def get_gifts_by_id(request, member_id):
-#     gifts = Gift.objects.filter(member__member_id=member_id).values(
-#     )
-#     pass
 
 
 @api_view(["GET"])
