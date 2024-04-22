@@ -3,6 +3,7 @@
 # from .serializers import GiftSerializer
 # May need these later, but not actively using them now
 
+import json
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework import status
@@ -13,24 +14,40 @@ from django.db.models import Prefetch
 
 @api_view(["POST"])
 def create_gift(request):
-    form = GiftForm(request.POST)
-    if form.is_valid():
-        gift = form.save(commit=False)
-        form.save_m2m() # Saves many-to-many fields
-        return JsonResponse(
-            # Should I be using Reponse instead of JsonResponse?
-            {
-                "message": "Gift added successfully",
-                "gift_id": gift.gift_id,
-            }, status = status.HTTP_201_CREATED
-        )
-    else:
-        return JsonResponse(
-            {
-                "message": "Form is not valid",
-                "errors": form.errors,
-            }, status = status.HTTP_400_BAD_REQUEST
-        )
+    gift_adder_id = request.data.get('giftAdder')
+    gift_receiver_id = request.data.get('giftReceiver')
+    item_name = request.data.get('itemName')
+    exact_item = request.data.get('exactItem')
+    multiple = request.data.get('multiple')
+    notes = request.data.get('notes')
+    date_to_remove = request.data.get('dateToRemove')
+    bought = request.data.get('bought')
+
+    # Parses the JSON string for visibility back into a Python list
+    visibility_ids = json.loads(request.data.get('visibility'))
+    
+# @api_view(["POST"])
+# def create_gift(request):
+#     form = GiftForm(request.POST)
+#     if form.is_valid():
+#         gift = form.save(commit=False)
+#         gift.save() # Assigns a primary key to the gift object
+#         # Do visibility stuff here
+#         form.save_m2m() # Saves many-to-many fields
+#         return JsonResponse(
+#             # Should I be using Reponse instead of JsonResponse?
+#             {
+#                 "message": "Gift added successfully",
+#                 "gift_id": gift.gift_id,
+#             }, status = status.HTTP_201_CREATED
+#         )
+#     else:
+#         return JsonResponse(
+#             {
+#                 "message": "Form is not valid",
+#                 "errors": form.errors,
+#             }, status = status.HTTP_400_BAD_REQUEST
+#         )
 
 @api_view(["GET"])
 def get_all_members(request):
@@ -107,6 +124,8 @@ def get_gifts_other(request, member_id):
 
 @api_view(["PUT"])
 def update_gift(request):
+    # my_model_instance = Gift.objects.get(gift_id=1)
+    # form = Gift(instance=my_model_instance)
     pass
 
 @api_view(["DELETE"])
