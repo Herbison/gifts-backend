@@ -14,18 +14,35 @@ from django.db.models import Prefetch
 
 @api_view(["POST"])
 def create_gift(request):
-    gift_adder_id = request.data.get('giftAdder')
-    gift_receiver_id = request.data.get('giftReceiver')
-    item_name = request.data.get('itemName')
-    exact_item = request.data.get('exactItem')
-    multiple = request.data.get('multiple')
-    notes = request.data.get('notes')
-    date_to_remove = request.data.get('dateToRemove')
-    bought = request.data.get('bought')
+
+    gift_data = {
+        'gift_adder_id': request.data.get('giftAdder'),
+        'gift_receiver': request.data.get('giftReceiver'),
+        'item_name': request.data.get('itemName'),
+        'exact_item': request.data.get('exactItem') == 'exact',
+        'multiple': request.data.get('multiple') == 'multiple',
+        'notes': request.data.get('notes'),
+        # Leaving date_to_remove and bought as default None/True for now
+    }
+
+    gift = Gift(**gift_data)
+    gift.save()
 
     # Parses the JSON string for visibility back into a Python list
-    visibility_ids = json.loads(request.data.get('visibility'))
+    visibility_ids = json.loads(request.data.get('visibility', '[]'))
+
+    # Set the many-to-many relationship
+    for member_id in visibility_ids:
+        gift.visible_to.add(Member.objects.get(pk=member_id))
     
+    gift.save()
+    
+    return JsonResponse({
+        'message': 'Gift added successfully',
+        'gift_id': gift.id
+    }, status=201)
+
+## Not getting something about Forms. Leaving this for validatioin etc later, moving to manually adding each field.
 # @api_view(["POST"])
 # def create_gift(request):
 #     form = GiftForm(request.POST)
