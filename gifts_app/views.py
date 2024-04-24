@@ -17,7 +17,7 @@ def create_gift(request):
 
     gift_data = {
         'gift_adder_id': request.data.get('giftAdder'),
-        'gift_receiver': request.data.get('giftReceiver'),
+        'gift_receiver_id': request.data.get('giftReceiver'),
         'item_name': request.data.get('itemName'),
         'exact_item': request.data.get('exactItem') == 'exact',
         'multiple': request.data.get('multiple') == 'multiple',
@@ -31,15 +31,18 @@ def create_gift(request):
     # Parses the JSON string for visibility back into a Python list
     visibility_ids = json.loads(request.data.get('visibility', '[]'))
 
+    if visibility_ids[0] == '0':
+        # If 0 (not a member_id) is passed, set visibility to all members
+        visibility_ids = Member.objects.values_list('member_id', flat=True)
     # Set the many-to-many relationship
     for member_id in visibility_ids:
         gift.visible_to.add(Member.objects.get(pk=member_id))
     
     gift.save()
-    
+
     return JsonResponse({
         'message': 'Gift added successfully',
-        'gift_id': gift.id
+        'gift_id': gift.gift_id
     }, status=201)
 
 ## Not getting something about Forms. Leaving this for validatioin etc later, moving to manually adding each field.
