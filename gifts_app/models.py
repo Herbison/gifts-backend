@@ -14,18 +14,6 @@ class Member(models.Model):
     member_name = models.CharField(max_length=50)
     show_bought = models.BooleanField(default=True)
 
-
-class Link(models.Model):
-    """
-    The Link model represents a single URL associated with a Gift.
-
-    Attributes:
-        url (URLField): The URL associated with the Gift.
-        name (CharField): The name or description of the URL.
-    """
-    url = models.URLField(max_length=400)
-    name = models.CharField(max_length=100, blank=True)
-
 class Gift(models.Model):
     """
     The Gift model represents an item that a member wishes to receive as a gift.
@@ -50,10 +38,22 @@ class Gift(models.Model):
     gift_adder = models.ForeignKey(Member, on_delete=models.CASCADE, related_name='adding_gift')
     gift_receiver = models.ForeignKey(Member, on_delete=models.CASCADE, related_name='receiving_gift')
     item_name = models.CharField(max_length=100)
-    links = models.ManyToManyField(Link, blank=True)
     exact_item = models.BooleanField(default=False)
     multiple = models.BooleanField(default=False)
     notes = models.CharField(max_length=1000, blank=True)
     date_to_remove = models.DateField(blank=True, null=True, default=None)
     bought = models.BooleanField(default=True)
     visible_to = models.ManyToManyField(Member, related_name='visible_gifts', blank=True)
+
+
+class Link(models.Model):
+    """
+    The Link model represents a single URL associated with a Gift.
+
+    Attributes:
+        url (URLField): The URL associated with the Gift.
+        name (CharField): The name or description of the URL.
+    """
+    gift = models.ForeignKey(Gift, related_name='links', on_delete=models.CASCADE)
+    url = models.URLField(max_length=400)
+    name = models.CharField(max_length=100, blank=True)
