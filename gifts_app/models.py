@@ -55,5 +55,5 @@ class Link(models.Model):
         name (CharField): The name or description of the URL.
     """
     gift = models.ForeignKey(Gift, related_name='links', on_delete=models.CASCADE)
-    url = models.URLField(max_length=400)
+    url = models.URLField(max_length=400, blank=True)
     name = models.CharField(max_length=100, blank=True)

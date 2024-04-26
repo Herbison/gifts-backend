@@ -9,7 +9,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 # from .forms import GiftForm
 from django.http import JsonResponse
-from .models import Gift, Member
+from .models import Gift, Member, Link
 from django.db.models import Prefetch
 
 @api_view(["POST"])
@@ -28,6 +28,7 @@ def create_gift(request):
     gift = Gift(**gift_data)
     gift.save()
 
+    ##Handling visibility
     # Parses the JSON string for visibility back into a Python list
     visibility_ids = json.loads(request.data.get('visibility', '[]'))
 
@@ -37,9 +38,13 @@ def create_gift(request):
     # Set the many-to-many relationship
     for member_id in visibility_ids:
         gift.visible_to.add(Member.objects.get(pk=member_id))
-    
-    gift.save()
 
+    ##Handling link(s)
+    link_url = request.POST.get('linkURL')
+    link_name = request.POST.get('linkName')
+    if link_url and link_name:
+        Link.objects.create(gift=gift, url=link_url, name=link_name)
+    
     return JsonResponse({
         'message': 'Gift added successfully',
         'gift_id': gift.gift_id
