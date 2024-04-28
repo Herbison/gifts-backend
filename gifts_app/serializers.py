@@ -1,18 +1,18 @@
 from rest_framework import serializers
-from .models import Gift, Link
-from django.contrib.auth.models import User
-
-class GiftSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Gift
-        fields = ["gift_id", "gift_receiver", "item_name", "exact_item", "multiple", "notes", "date_to_remove", "bought", "visible_to", "added_by"]
+from .models import Gift, Link, Member
 
 class LinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Link
-        fields = ["gift", "url"]
+        fields = ["name", "url"]
 
-class UserSerializer(serializers.ModelSerializer):
+class GiftSerializer(serializers.ModelSerializer):
+    links = LinkSerializer(many=True, read_only=True)
     class Meta:
-        model = User
-        fields = ['username']
+        model = Gift
+        fields = ["gift_id", "gift_receiver", "item_name", "exact_item", "multiple", "notes", "date_to_remove", "bought", "visible_to", "added_by", "links"]
+
+class MemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Member
+        fields = ["member_id", "member_name", "show_bought"]

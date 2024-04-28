@@ -40,6 +40,7 @@ def create_gift(request):
         gift.visible_to.add(Member.objects.get(pk=member_id))
 
     ##Handling link(s)
+    # Add default for link_name of "Link" if not provided
     link_url = request.POST.get('linkURL')
     link_name = request.POST.get('linkName')
     if link_url and link_name:
@@ -50,7 +51,7 @@ def create_gift(request):
         'gift_id': gift.gift_id
     }, status=201)
 
-## Not getting something about Forms. Leaving this for validatioin etc later, moving to manually adding each field.
+## Not getting something about Forms. Leaving this for validation etc later, moving to manually adding each field.
 # @api_view(["POST"])
 # def create_gift(request):
 #     form = GiftForm(request.POST)
@@ -94,6 +95,13 @@ def get_gifts_self(request, member_id):
             Prefetch('visible_to', queryset=Member.objects.only('member_name'))
         )
         self_gifts = visible_gifts.filter(gift_receiver=member)
+
+        # links = member.links.prefetch_related(
+        #     Prefetch('links', queryset=Member.objects.only('member_name'))
+        # )
+        # self_links = links.filter(gift_receiver=member)
+        ## This doesn't work. Based on gift, not member. 
+
         # Builds a list of gifts with custom structure including 'visible_to' member names
         gift_list = [
             {
@@ -106,7 +114,8 @@ def get_gifts_self(request, member_id):
                 'notes': gift.notes,
                 'date_to_remove': gift.date_to_remove,
                 'bought': gift.bought,
-                'visible_to': list(gift.visible_to.values_list('member_name', flat=True))
+                'visible_to': list(gift.visible_to.values_list('member_name', flat=True)),
+                'links': list(gift.links.values('name', 'url'))
             }
             for gift in self_gifts
         ]
