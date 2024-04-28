@@ -146,6 +146,7 @@ def get_gifts_other(request, member_id):
                 'notes': gift.notes,
                 'date_to_remove': gift.date_to_remove,
                 'bought': gift.bought,
+                'links': list(gift.links.values('name', 'url'))
             }
             for gift in gifts
         ]
