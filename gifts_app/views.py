@@ -13,7 +13,7 @@ from .models import Gift, Member, Link
 from django.db.models import Prefetch
 
 @api_view(["POST"])
-def create_gift(request):
+def add_gift(request):
 
     gift_data = {
         'gift_adder_id': request.data.get('giftAdder'),
