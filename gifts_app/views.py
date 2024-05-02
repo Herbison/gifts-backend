@@ -96,12 +96,6 @@ def get_gifts_self(request, member_id):
         )
         self_gifts = visible_gifts.filter(gift_receiver=member)
 
-        # links = member.links.prefetch_related(
-        #     Prefetch('links', queryset=Member.objects.only('member_name'))
-        # )
-        # self_links = links.filter(gift_receiver=member)
-        ## This doesn't work. Based on gift, not member. 
-
         # Builds a list of gifts with custom structure including 'visible_to' member names
         gift_list = [
             {
@@ -158,10 +152,13 @@ def get_gifts_other(request, member_id):
 
 
 @api_view(["PUT"])
-def update_gift(request):
-    # my_model_instance = Gift.objects.get(gift_id=1)
-    # form = Gift(instance=my_model_instance)
-    pass
+def edit_gift(request):
+    gift_id = request.data.get('gift_id')
+    try:
+        gift = Gift.objects.get(id=gift_id)
+    except Gift.DoesNotExist:
+        return JsonResponse({'message': 'Gift not found'}, status=404)
+    
 
 @api_view(["DELETE"])
 def remove_gift(request):

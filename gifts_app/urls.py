@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import get_gifts_self, get_gifts_other, get_all_members, add_gift
+from .views import get_gifts_self, get_gifts_other, get_all_members, add_gift, edit_gift
 
 urlpatterns = [
     path('get_gifts_self/<int:member_id>/', get_gifts_self, name='get_gifts_self'),
