@@ -12,44 +12,99 @@ from django.http import JsonResponse
 from .models import Gift, Member, Link
 from django.db.models import Prefetch
 
-@api_view(["POST"])
-def add_gift(request):
+@api_view(["GET"])
+def get_all_members(request):
+    members = Member.objects.all()
+    member_list = members.values(
+        "member_id", # Primary Key
+        "member_name",
+        "show_bought",    
+    )
+    return JsonResponse({"members": list(member_list)})
 
-    gift_data = {
-        'gift_adder_id': request.data.get('giftAdder'),
-        'gift_receiver_id': request.data.get('giftReceiver'),
-        'item_name': request.data.get('itemName'),
-        'exact_item': request.data.get('exactItem') == 'exact',
-        'multiple': request.data.get('multiple') == 'multiple',
-        'notes': request.data.get('notes'),
-        # Leaving date_to_remove and bought as default None/True for now
-    }
+@api_view(['POST', 'PUT'])  # Handle both POST and PUT
+def manage_gift(request):
+    if request.method == 'POST':
+        # Create a new gift
+        gift_data = {
+            'gift_adder_id': request.data.get('giftAdder'),
+            'gift_receiver_id': request.data.get('giftReceiver'),
+            'item_name': request.data.get('itemName'),
+            'exact_item': request.data.get('exactItem', 'exact'),
+            'multiple': request.data.get('multiple', 'single'),
+            'notes': request.data.get('notes'),
+        }
+        gift = Gift(**gift_data)
+        gift.save()
+        # Additional logic for visibility, links etc.
+        # Return response for creation
+        return JsonResponse({'message': 'Gift added successfully', 'gift_id': gift.id}, status=201)
 
-    gift = Gift(**gift_data)
-    gift.save()
+    elif request.method == 'PUT':
+        # Update an existing gift
+        gift_id = request.data.get('gift_id')
+        try:
+            gift = Gift.objects.get(id=gift_id)
+        except Gift.DoesNotExist:
+            return JsonResponse({'message': 'Gift not found'}, status=404)
 
-    ##Handling visibility
-    # Parses the JSON string for visibility back into a Python list
-    visibility_ids = json.loads(request.data.get('visibility', '[]'))
+        # Update fields from the request
+        gift_data = {
+            'gift_adder_id': request.data.get('giftAdder', gift.gift_adder_id),
+            'gift_receiver_id': request.data.get('giftReceiver', gift.gift_receiver_id),
+            'item_name': request.data.get('itemName', gift.item_name),
+            'exact_item': request.data.get('exactItem', gift.exact_item),
+            'multiple': request.data.get('multiple', gift.multiple),
+            'notes': request.data.get('notes', gift.notes),
+        }
+        for key, value in gift_data.items():
+            setattr(gift, key, value)
+        gift.save()
+        # Additional logic for updating visibility, links etc.
+        # Return response for update
+        return JsonResponse({'message': 'Gift updated successfully', 'gift_id': gift.id}, status=200)
 
-    if visibility_ids[0] == '0':
-        # If 0 (not a member_id) is passed, set visibility to all members
-        visibility_ids = Member.objects.values_list('member_id', flat=True)
-    # Set the many-to-many relationship
-    for member_id in visibility_ids:
-        gift.visible_to.add(Member.objects.get(pk=member_id))
+    return JsonResponse({'message': 'Invalid request'}, status=400)
 
-    ##Handling link(s)
-    # Add default for link_name of "Link" if not provided
-    link_url = request.POST.get('linkURL')
-    link_name = request.POST.get('linkName')
-    if link_url and link_name:
-        Link.objects.create(gift=gift, url=link_url, name=link_name)
+## Combining add_gift and edit_gift into manage_gift
+# @api_view(["POST"])
+# def add_gift(request):
+
+#     gift_data = {
+#         'gift_adder_id': request.data.get('giftAdder'),
+#         'gift_receiver_id': request.data.get('giftReceiver'),
+#         'item_name': request.data.get('itemName'),
+#         'exact_item': request.data.get('exactItem') == 'exact',
+#         'multiple': request.data.get('multiple') == 'multiple',
+#         'notes': request.data.get('notes'),
+#         # Leaving date_to_remove and bought as default None/True for now
+#     }
+
+#     gift = Gift(**gift_data)
+#     gift.save()
+
+#     ##Handling visibility
+#     # Parses the JSON string for visibility back into a Python list
+#     visibility_ids = json.loads(request.data.get('visibility', '[]'))
+
+#     if visibility_ids[0] == '0':
+#         # If 0 (not a member_id) is passed, set visibility to all members
+#         visibility_ids = Member.objects.values_list('member_id', flat=True)
+#     # Set the many-to-many relationship
+#     for member_id in visibility_ids:
+#         gift.visible_to.add(Member.objects.get(pk=member_id))
+
+#     ##Handling link(s)
+#     # Add default for link_name of "Link" if not provided
+#     link_url = request.POST.get('linkURL')
+#     link_name = request.POST.get('linkName')
+#     if link_url and link_name:
+#         Link.objects.create(gift=gift, url=link_url, name=link_name)
     
-    return JsonResponse({
-        'message': 'Gift added successfully',
-        'gift_id': gift.gift_id
-    }, status=201)
+#     return JsonResponse({
+#         'message': 'Gift added successfully',
+#         'gift_id': gift.gift_id
+#     }, status=201)
 
 ## Not getting something about Forms. Leaving this for validation etc later, moving to manually adding each field.
 # @api_view(["POST"])
@@ -75,16 +130,13 @@ def add_gift(request):
 #             }, status = status.HTTP_400_BAD_REQUEST
 #         )
 
-@api_view(["GET"])
-def get_all_members(request):
-    members = Member.objects.all()
-    member_list = members.values(
-        "member_id", # Primary Key
-        "member_name",
-        "show_bought",    
-    )
-    return JsonResponse({"members": list(member_list)})
-
+# @api_view(["PUT"])
+# def edit_gift(request):
+#     gift_id = request.data.get('gift_id')
+#     try:
+#         gift = Gift.objects.get(id=gift_id)
+#     except Gift.DoesNotExist:
+#         return JsonResponse({'message': 'Gift not found'}, status=404)
 
 @api_view(["GET"])
 def get_gifts_self(request, member_id):
@@ -149,15 +201,6 @@ def get_gifts_other(request, member_id):
     else:
         return JsonResponse({'error': 'No self_member_id provided'}, status=400)
 
-
-
-@api_view(["PUT"])
-def edit_gift(request):
-    gift_id = request.data.get('gift_id')
-    try:
-        gift = Gift.objects.get(id=gift_id)
-    except Gift.DoesNotExist:
-        return JsonResponse({'message': 'Gift not found'}, status=404)
     
 
 @api_view(["DELETE"])
