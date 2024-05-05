@@ -63,66 +63,66 @@ def add_gift(request):
     }, status=201)
 
 
-@api_view(['POST', 'PUT'])  # Handle both POST and PUT
-def manage_gift(request):
-    if request.method == 'POST':
-        # Create a new gift
-        gift_data = {
-            'gift_adder_id': request.data.get('giftAdder'),
-            'gift_receiver_id': request.data.get('giftReceiver'),
-            'item_name': request.data.get('itemName'),
-            'exact_item': request.data.get('exactItem') == 'exact',
-            'multiple': request.data.get('multiple') == 'multiple',
-            'notes': request.data.get('notes'),
-        }
-        gift = Gift(**gift_data)
-        gift.save()
+# @api_view(['POST', 'PUT'])  # Handle both POST and PUT
+# def manage_gift(request):
+#     if request.method == 'POST':
+#         # Create a new gift
+#         gift_data = {
+#             'gift_adder_id': request.data.get('giftAdder'),
+#             'gift_receiver_id': request.data.get('giftReceiver'),
+#             'item_name': request.data.get('itemName'),
+#             'exact_item': request.data.get('exactItem') == 'exact',
+#             'multiple': request.data.get('multiple') == 'multiple',
+#             'notes': request.data.get('notes'),
+#         }
+#         gift = Gift(**gift_data)
+#         gift.save()
         
         
-    ## Handling visibility
-    # Parses the JSON string for visibility back into a Python list
-        visibility_ids = json.loads(request.data.get('visibility', '[]'))
+#     ## Handling visibility
+#     # Parses the JSON string for visibility back into a Python list
+#         visibility_ids = json.loads(request.data.get('visibility', '[]'))
 
-        if visibility_ids[0] == '0':
-            # If 0 (not a member_id) is passed, set visibility to all members
-            visibility_ids = Member.objects.values_list('member_id', flat=True)
-        # Set the many-to-many relationship
-        for member_id in visibility_ids:
-            gift.visible_to.add(Member.objects.get(pk=member_id))
+#         if visibility_ids[0] == '0':
+#             # If 0 (not a member_id) is passed, set visibility to all members
+#             visibility_ids = Member.objects.values_list('member_id', flat=True)
+#         # Set the many-to-many relationship
+#         for member_id in visibility_ids:
+#             gift.visible_to.add(Member.objects.get(pk=member_id))
 
-        ## Handling link(s)
-        # Add default for link_name of "Link" if not provided
-        link_url = request.POST.get('linkURL')
-        link_name = request.POST.get('linkName')
-        if link_url and link_name:
-            Link.objects.create(gift=gift, url=link_url, name=link_name)
+#         ## Handling link(s)
+#         # Add default for link_name of "Link" if not provided
+#         link_url = request.POST.get('linkURL')
+#         link_name = request.POST.get('linkName')
+#         if link_url and link_name:
+#             Link.objects.create(gift=gift, url=link_url, name=link_name)
 
-            # Return response for creation
-        return JsonResponse({
-            'message': 'Gift added successfully',
-            'gift_id': gift.gift_id
-        }, status=201)
+#             # Return response for creation
+#         return JsonResponse({
+#             'message': 'Gift added successfully',
+#             'gift_id': gift.gift_id
+#         }, status=201)
 
-    elif request.method == 'PUT':
-        # Update an existing gift
-        gift_id = request.data.get('gift_id')
-        try:
-            gift = Gift.objects.get(id=gift_id)
-        except Gift.DoesNotExist:
-            return JsonResponse({'message': 'Gift not found'}, status=404)
+#     elif request.method == 'PUT':
+#         # Update an existing gift
+#         gift_id = request.data.get('gift_id')
+#         try:
+#             gift = Gift.objects.get(id=gift_id)
+#         except Gift.DoesNotExist:
+#             return JsonResponse({'message': 'Gift not found'}, status=404)
 
-        # Update fields from the request
-        gift_data = {
-            'gift_adder_id': request.data.get('giftAdder', gift.gift_adder_id),
-            'gift_receiver_id': request.data.get('giftReceiver', gift.gift_receiver_id),
-            'item_name': request.data.get('itemName', gift.item_name),
-            'exact_item': request.data.get('exactItem', gift.exact_item),
-            'multiple': request.data.get('multiple', gift.multiple),
-            'notes': request.data.get('notes', gift.notes),
-        }
-        for key, value in gift_data.items():
-            setattr(gift, key, value)
-        gift.save()
+#         # Update fields from the request
+#         gift_data = {
+#             'gift_adder_id': request.data.get('giftAdder', gift.gift_adder_id),
+#             'gift_receiver_id': request.data.get('giftReceiver', gift.gift_receiver_id),
+#             'item_name': request.data.get('itemName', gift.item_name),
+#             'exact_item': request.data.get('exactItem', gift.exact_item),
+#             'multiple': request.data.get('multiple', gift.multiple),
+#             'notes': request.data.get('notes', gift.notes),
+#         }
+#         for key, value in gift_data.items():
+#             setattr(gift, key, value)
+#         gift.save()
         
 
     # ## Handling visibility
@@ -244,7 +244,24 @@ def get_gifts_other(request, member_id):
         return JsonResponse({'gifts': gifts_list})
     else:
         return JsonResponse({'error': 'No self_member_id provided'}, status=400)
-
+    
+@api_view(["GET"])
+def get_gift_by_id(request, gift_id):
+    gift = Gift.objects.get(pk=gift_id)
+    gift_data = {
+        'gift_id': gift.gift_id,
+        'gift_adder': gift.gift_adder.member_name,
+        'gift_receiver': gift.gift_receiver.member_name,
+        'item_name': gift.item_name,
+        'exact_item': gift.exact_item,
+        'multiple': gift.multiple,
+        'notes': gift.notes,
+        'date_to_remove': gift.date_to_remove,
+        'bought': gift.bought,
+        'visible_to': list(gift.visible_to.values_list('member_name', flat=True)),
+        'links': list(gift.links.values('name', 'url'))
+    }
+    pass
     
 
 @api_view(["DELETE"])
