@@ -12,7 +12,6 @@ class Member(models.Model):
     """
     member_id = models.AutoField(primary_key=True)
     member_name = models.CharField(max_length=50)
-    show_bought = models.BooleanField(default=True)
 
 class Gift(models.Model):
     """
@@ -41,8 +40,6 @@ class Gift(models.Model):
     exact_item = models.BooleanField(default=False)
     multiple = models.BooleanField(default=False)
     notes = models.CharField(max_length=1000, blank=True)
-    date_to_remove = models.DateField(blank=True, null=True, default=None)
-    bought = models.BooleanField(default=True)
     visible_to = models.ManyToManyField(Member, related_name='visible_gifts', blank=True)
 
 

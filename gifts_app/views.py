@@ -17,8 +17,7 @@ def get_all_members(request):
     members = Member.objects.all()
     member_list = members.values(
         "member_id", # Primary Key
-        "member_name",
-        "show_bought",    
+        "member_name",    
     )
     return JsonResponse({"members": list(member_list)})
 
@@ -119,8 +118,6 @@ def get_gifts_self(request, member_id):
                 'exact_item': gift.exact_item,
                 'multiple': gift.multiple,
                 'notes': gift.notes,
-                'date_to_remove': gift.date_to_remove,
-                'bought': gift.bought,
                 'visible_to': list(gift.visible_to.values_list('member_name', flat=True)),
                 'links': list(gift.links.values('name', 'url'))
             }
@@ -151,8 +148,6 @@ def get_gifts_other(request, member_id):
                 'exact_item': gift.exact_item,
                 'multiple': gift.multiple,
                 'notes': gift.notes,
-                'date_to_remove': gift.date_to_remove,
-                'bought': gift.bought,
                 'links': list(gift.links.values('name', 'url'))
             }
             for gift in gifts
@@ -173,8 +168,6 @@ def get_gift_by_id(request, gift_id):
         'exact_item': gift.exact_item,
         'multiple': gift.multiple,
         'notes': gift.notes,
-        'date_to_remove': gift.date_to_remove,
-        'bought': gift.bought,
         'visible_to': list(gift.visible_to.values_list('member_name', flat=True)),
         'links': list(gift.links.values('name', 'url'))
     }
