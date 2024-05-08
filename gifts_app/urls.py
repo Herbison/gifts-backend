@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import get_gifts_self, get_gifts_other, get_all_members, add_gift, edit_gift_by_id,  get_gift_by_id
+from .views import get_gifts_self, get_gifts_other, get_all_members, add_gift, edit_gift_by_id,  get_gift_by_id, delete_gift_by_id
 
 urlpatterns = [
     path('get_gifts_self/<int:member_id>/', get_gifts_self, name='get_gifts_self'),
@@ -8,4 +8,5 @@ urlpatterns = [
     path('add_gift/', add_gift, name='add_gift'),
     path('edit_gift_by_id/<int:gift_id>/', edit_gift_by_id, name='edit_gift_by_id'),
     path('get_gift_by_id/<int:gift_id>/', get_gift_by_id, name='get_gift_by_id'),
+    path('delete_gift_by_id/<int:gift_id>/', delete_gift_by_id, name='delete_gift_by_id'),
 ]

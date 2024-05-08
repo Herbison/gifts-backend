@@ -29,8 +29,8 @@ def add_gift(request):
         'gift_adder_id': request.data.get('giftAdder'),
         'gift_receiver_id': request.data.get('giftReceiver'),
         'item_name': request.data.get('itemName'),
-        'exact_item': request.data.get('exactItem') == 'exact',
-        'multiple': request.data.get('multiple') == 'multiple',
+        'exact_item': request.data.get('exactItem') == 'true',
+        'multiple': request.data.get('multiple') == 'true',
         'notes': request.data.get('notes'),
         # Leaving date_to_remove and bought as default None/True for now
     }
@@ -66,8 +66,8 @@ def edit_gift_by_id(request, gift_id):
     gift = Gift.objects.get(pk=gift_id)
 
     gift.item_name = request.data.get('itemName')
-    gift.exact_item = request.data.get('exactItem') == 'exact'
-    gift.multiple = request.data.get('multiple') == 'multiple'
+    gift.exact_item = request.data.get('exactItem') == 'true'
+    gift.multiple = request.data.get('multiple') == 'true'
     gift.notes = request.data.get('notes')
     gift.save()
 
@@ -92,6 +92,15 @@ def edit_gift_by_id(request, gift_id):
 
     return JsonResponse({
         'message': 'Gift updated successfully',
+        'gift_id': gift.gift_id
+    }, status=200)
+
+@api_view(["DELETE"])
+def delete_gift_by_id(request, gift_id):
+    gift = Gift.objects.get(pk=gift_id)
+    gift.delete()
+    return JsonResponse({
+        'message': 'Gift deleted successfully',
         'gift_id': gift.gift_id
     }, status=200)
 
@@ -169,8 +178,3 @@ def get_gift_by_id(request, gift_id):
         'links': list(gift.links.values('name', 'url'))
     }
     return JsonResponse({'gift': gift_data})
-    
-
-@api_view(["DELETE"])
-def remove_gift(request):
-    pass
