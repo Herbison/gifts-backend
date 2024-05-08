@@ -6,6 +6,6 @@ urlpatterns = [
     path('get_gifts_other/<int:member_id>/', get_gifts_other, name='get_gifts_other'),
     path('get_all_members/', get_all_members, name='get_all_members'),
     path('add_gift/', add_gift, name='add_gift'),
-    path('edit_gift_by_id/<int:gift_id>//', edit_gift_by_id, name='edit_gift_by_id'),
+    path('edit_gift_by_id/<int:gift_id>/', edit_gift_by_id, name='edit_gift_by_id'),
     path('get_gift_by_id/<int:gift_id>/', get_gift_by_id, name='get_gift_by_id'),
 ]

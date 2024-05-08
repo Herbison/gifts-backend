@@ -65,13 +65,10 @@ def add_gift(request):
 def edit_gift_by_id(request, gift_id):
     gift = Gift.objects.get(pk=gift_id)
 
-    gift.gift_adder_id = request.data.get('giftAdder')
-    gift.gift_receiver_id = request.data.get('giftReceiver')
     gift.item_name = request.data.get('itemName')
     gift.exact_item = request.data.get('exactItem') == 'exact'
     gift.multiple = request.data.get('multiple') == 'multiple'
     gift.notes = request.data.get('notes')
-    # Leaving date_to_remove and bought as default None/True for now
     gift.save()
 
     ## Handling visibility
@@ -171,7 +168,7 @@ def get_gift_by_id(request, gift_id):
         'visible_to': list(gift.visible_to.values_list('member_name', flat=True)),
         'links': list(gift.links.values('name', 'url'))
     }
-    pass
+    return JsonResponse({'gift': gift_data})
     
 
 @api_view(["DELETE"])
