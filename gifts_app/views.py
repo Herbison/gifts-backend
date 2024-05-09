@@ -32,7 +32,7 @@ def add_gift(request):
         'exact_item': request.data.get('exactItem') == 'true',
         'multiple': request.data.get('multiple') == 'true',
         'notes': request.data.get('notes'),
-        # Leaving date_to_remove and bought as default None/True for now
+        'other_notes': request.data.get('otherNotes'),
     }
 
     gift = Gift(**gift_data)
@@ -69,6 +69,7 @@ def edit_gift_by_id(request, gift_id):
     gift.exact_item = request.data.get('exactItem') == 'true'
     gift.multiple = request.data.get('multiple') == 'true'
     gift.notes = request.data.get('notes')
+    gift.other_notes = request.data.get('otherNotes')
     gift.save()
 
     ## Handling visibility
@@ -124,6 +125,7 @@ def get_gifts_self(request, member_id):
                 'exact_item': gift.exact_item,
                 'multiple': gift.multiple,
                 'notes': gift.notes,
+                'other_notes': gift.other_notes,
                 'visible_to': list(gift.visible_to.values_list('member_name', flat=True)),
                 'links': list(gift.links.values('name', 'url'))
             }
@@ -154,6 +156,7 @@ def get_gifts_other(request, member_id):
                 'exact_item': gift.exact_item,
                 'multiple': gift.multiple,
                 'notes': gift.notes,
+                'other_notes': gift.other_notes,
                 'links': list(gift.links.values('name', 'url'))
             }
             for gift in gifts
@@ -174,6 +177,7 @@ def get_gift_by_id(request, gift_id):
         'exact_item': gift.exact_item,
         'multiple': gift.multiple,
         'notes': gift.notes,
+        'other_notes': gift.other_notes,
         'visible_to': list(gift.visible_to.values_list('member_name', flat=True)),
         'links': list(gift.links.values('name', 'url'))
     }

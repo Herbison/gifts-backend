@@ -40,6 +40,8 @@ class Gift(models.Model):
     exact_item = models.BooleanField(default=False)
     multiple = models.BooleanField(default=False)
     notes = models.CharField(max_length=1000, blank=True)
+    other_notes = models.CharField(max_length=1000, blank=True)
+    bought = models.CharField(max_length=1000, blank="not bought")
     visible_to = models.ManyToManyField(Member, related_name='visible_gifts', blank=True)
 
 
