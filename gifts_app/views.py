@@ -71,6 +71,7 @@ def edit_gift_by_id(request, gift_id):
     gift.multiple = request.data.get('multiple') == 'true'
     gift.notes = request.data.get('notes')
     gift.other_notes = request.data.get('otherNotes')
+    gift.bought = request.data.get('boughtStatus')
     gift.save()
 
     ## Handling visibility
@@ -126,7 +127,6 @@ def get_gifts_self(request, member_id):
                 'exact_item': gift.exact_item,
                 'multiple': gift.multiple,
                 'notes': gift.notes,
-                'other_notes': gift.other_notes,
                 'visible_to': list(gift.visible_to.values_list('member_name', flat=True)),
                 'links': list(gift.links.values('name', 'url'))
             }
@@ -158,7 +158,8 @@ def get_gifts_other(request, member_id):
                 'multiple': gift.multiple,
                 'notes': gift.notes,
                 'other_notes': gift.other_notes,
-                'links': list(gift.links.values('name', 'url'))
+                'links': list(gift.links.values('name', 'url')),
+                'bought': gift.bought
             }
             for gift in gifts
         ]
@@ -180,6 +181,7 @@ def get_gift_by_id(request, gift_id):
         'notes': gift.notes,
         'other_notes': gift.other_notes,
         'visible_to': list(gift.visible_to.values_list('member_name', flat=True)),
-        'links': list(gift.links.values('name', 'url'))
+        'links': list(gift.links.values('name', 'url')),
+        'bought': gift.bought
     }
     return JsonResponse({'gift': gift_data})
