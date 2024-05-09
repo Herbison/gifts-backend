@@ -41,7 +41,7 @@ class Gift(models.Model):
     multiple = models.BooleanField(default=False)
     notes = models.CharField(max_length=1000, blank=True)
     other_notes = models.CharField(max_length=1000, blank=True)
-    bought = models.CharField(max_length=1000, blank="not bought")
+    bought = models.CharField(max_length=100, blank='none')
     visible_to = models.ManyToManyField(Member, related_name='visible_gifts', blank=True)
 
 
@@ -56,3 +56,5 @@ class Link(models.Model):
     gift = models.ForeignKey(Gift, related_name='links', on_delete=models.CASCADE)
     url = models.URLField(max_length=400, blank=True)
     name = models.CharField(max_length=100, blank=True)
+
+

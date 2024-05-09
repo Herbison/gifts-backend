@@ -33,6 +33,7 @@ def add_gift(request):
         'multiple': request.data.get('multiple') == 'true',
         'notes': request.data.get('notes'),
         'other_notes': request.data.get('otherNotes'),
+        'bought': request.data.get('boughtStatus'),
     }
 
     gift = Gift(**gift_data)
