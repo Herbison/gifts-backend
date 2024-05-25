@@ -43,9 +43,6 @@ def add_gift(request):
     # Parses the JSON string for visibility back into a Python list
     visibility_ids = json.loads(request.data.get('visibility', '[]'))
 
-    if visibility_ids[0] == '0':
-        # If 0 (not a member_id) is passed, set visibility to all members
-        visibility_ids = Member.objects.values_list('member_id', flat=True)
     # Set the many-to-many relationship
     for member_id in visibility_ids:
         gift.visible_to.add(Member.objects.get(pk=member_id))
@@ -78,10 +75,7 @@ def edit_gift_by_id(request, gift_id):
     # Parses the JSON string for visibility back into a Python list
     visibility_ids = json.loads(request.data.get('visibility', '[]'))
 
-    if visibility_ids[0] == '0':
-        # If 0 (not a member_id) is passed, set visibility to all members
-        visibility_ids = Member.objects.values_list('member_id', flat=True)
-    # Set the many-to-many relationship
+    # Set the many-to-many relationship. Clear the existing visibility list first.
     gift.visible_to.clear()
     for member_id in visibility_ids:
         gift.visible_to.add(Member.objects.get(pk=member_id))
@@ -180,7 +174,7 @@ def get_gift_by_id(request, gift_id):
         'multiple': gift.multiple,
         'notes': gift.notes,
         'other_notes': gift.other_notes,
-        'visible_to': list(gift.visible_to.values_list('member_name', flat=True)),
+        'visible_to': list(gift.visible_to.values_list('member_id', flat=True)),
         'links': list(gift.links.values('name', 'url')),
         'bought': gift.bought
     }
