@@ -4,13 +4,16 @@
 # May need these later, but not actively using them now
 
 import json
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from rest_framework.decorators import api_view
 from rest_framework import status
 # from .forms import GiftForm
 from django.http import JsonResponse
 from .models import Gift, Member, Link
 from django.db.models import Prefetch
+
+def redirect_to_admin(request):
+    return redirect('/admin/')
 
 @api_view(["GET"])
 def get_all_members(request):
