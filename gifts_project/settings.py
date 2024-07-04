@@ -29,11 +29,22 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 
-# Adds support for HTTPS
+## Adds support for HTTPS
+# Trust the 'X-Forwarded-Proto' header to determine if the request is secure
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Redirect all HTTP requests to HTTPS
 SECURE_SSL_REDIRECT = True
+
+# Ensure cookies are only sent over HTTPS
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
+
+# Enable HTTP Strict Transport Security (HSTS)
+SECURE_HSTS_SECONDS = 3600
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
 
 
 # Application definition
