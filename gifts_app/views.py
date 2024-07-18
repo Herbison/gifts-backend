@@ -15,6 +15,9 @@ from django.db.models import Prefetch
 def redirect_to_admin(request):
     return redirect('/admin/')
 
+def health_check(request):
+    return JsonResponse({"status": "ok"}, status=200)
+
 @api_view(["GET"])
 def get_all_members(request):
     members = Member.objects.all()
