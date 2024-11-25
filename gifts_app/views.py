@@ -8,9 +8,12 @@ from django.shortcuts import render, redirect
 from rest_framework.decorators import api_view
 from rest_framework import status
 # from .forms import GiftForm
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from .models import Gift, Member, Link
 from django.db.models import Prefetch
+
+def health_check(request):
+    return HttpResponse("OK", status=200)
 
 def redirect_to_admin(request):
     return redirect('/admin/')
