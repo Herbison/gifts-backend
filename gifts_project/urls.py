@@ -9,4 +9,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path('', include('gifts_app.urls')),
     path('', redirect_to_admin),
+    # I want to explicitly have /admin as the admin url, but also load right to it
 ]

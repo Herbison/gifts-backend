@@ -31,14 +31,15 @@ ALLOWED_HOSTS = ['*']
 
 ## Adds support for HTTPS
 # Trust the 'X-Forwarded-Proto' header to determine if the request is secure
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Redirect all HTTP requests to HTTPS
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
+# TODO: Change this back to True after local testing.
 
 # Ensure cookies are only sent over HTTPS
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
 
 # Enable HTTP Strict Transport Security (HSTS)
 SECURE_HSTS_SECONDS = 3600
